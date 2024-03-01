@@ -1,32 +1,45 @@
-import { createContext, JSX, useContext, useState } from "react";
+"use client"
+
+import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface UserInterface {
-    email: string;
-    uid: string;
+    email: string | null;
+    uid: string | null;
 }
 
-export const InitialUserState: UserInterface = {
-    email: "",
-    uid: ""
+interface UserContextType {
+    user: UserInterface;
+    setUser: (user: UserInterface) => void;
+    resetUser: () => void;
 }
 
-const UserContext = createContext(InitialUserState);
+const UserContext = createContext<UserContextType>({
+    user: { email: "", uid: "" },
+    setUser: () => { },
+    resetUser: () => { }
+});
 
 export const useUser = () => {
     return useContext(UserContext);
 }
 
-export const UserProvider = (props: React.PropsWithChildren<{}>) => {
-    const [userState, setUserState] = useState<UserInterface>(InitialUserState)
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+    const [userState, setUserState] = useState<UserInterface>({ email: "", uid: "" });
 
-    const SetUser = (userCredential: UserInterface) => {
-        setUserState({ ...userCredential })
+    const setUser = (userCredential: UserInterface) => {
+        setUserState(userCredential);
+        // console.log({ userState })
     }
 
-    const ResetUser = () => {
-        setUserState(InitialUserState)
+    const resetUser = () => {
+        setUserState({ email: "", uid: "" });
     }
 
-    const valueCtx = { ...userState, SetUser, ResetUser };
-    return <UserContext.Provider value={valueCtx} {...props} />
+    const value = { user: userState, setUser, resetUser };
+
+    return (
+        <UserContext.Provider value={value}>
+            {children}
+        </UserContext.Provider>
+    );
 }

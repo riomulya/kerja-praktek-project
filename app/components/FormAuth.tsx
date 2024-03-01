@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { SignIn } from '../auth/firebase';
+import { useUserStore } from "../hooks/store/storeUser"
 
 export const FormAuth = () => {
+    const { user } = useUserStore();
+
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -79,6 +82,7 @@ export const FormAuth = () => {
                     </div>
                 </div>
             </div>
+            <p>email : {user.email}</p>
         </section>
     )
 }

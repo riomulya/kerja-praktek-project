@@ -3,33 +3,34 @@
 import { CircularProgress } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
 import { Authentication } from "../auth/firebase";
-import { useUser, UserInterface } from "./UserContext"
-
+import { useUser } from "./UserContext";
+import { useUserStore } from "../hooks/store/storeUser";
 
 const AuthStateChangeProvider = ({ children }: { children: ReactNode }) => {
-    const [isLoading, setIsLoading] = useState(true)
-    const { SetUser } = useUser();
+    const [isLoading, setIsLoading] = useState(true);
+    const { setUser } = useUser();
+    const { SetUser, resetUser, user: userGlobal } = useUserStore();
 
-    const InitiateAuthStateChange = () => {
-        Authentication().onAuthStateChanged((user) => {
+    useEffect(() => {
+        const unsubscribe = Authentication().onAuthStateChanged((user) => {
             if (user) {
-                console.log("user is authenticated")
+                console.log("User is authenticated");
                 console.log({ user });
-                SetUser({ email: user.email, uid: user.uid })
+                setUser({ email: user.email, uid: user.uid });
+                SetUser({ email: user.email, uid: user.uid });
+                console.log({ userGlobal })
             } else {
-                console.log("user is not authenticated")
+                console.log("User is not authenticated");
+                resetUser(); // Clear user store state
             }
             setIsLoading(false);
-        })
-    }
-    useEffect(() => {
-        InitiateAuthStateChange()
-    }, [])
+        });
 
+        // Cleanup function to unsubscribe from the listener when component unmounts
+        return () => unsubscribe();
+    }, [setUser, useUserStore]); // Added setUser and setUserStore as dependencies
 
-    return isLoading ? <CircularProgress /> : <>{children}</>
-}
-
-
+    return isLoading ? <CircularProgress /> : <>{children}</>;
+};
 
 export default AuthStateChangeProvider;
