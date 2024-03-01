@@ -1,58 +1,35 @@
 "use client"
 
-import { auth } from "../auth/firebase";
-import {
-    GoogleAuthProvider,
-    signInWithPopup,
-    signInWithRedirect,
-    signOut,
-    onAuthStateChanged,
-} from "firebase/auth";
-import {
-    useContext,
-    createContext,
-    ReactNode,
-    useState,
-    useEffect
-} from "react";
+import { CircularProgress } from "@mui/material";
+import { ReactNode, useEffect, useState } from "react";
+import { Authentication } from "../auth/firebase";
+import { useUser, UserInterface } from "./UserContext"
 
 
-// Buat context baru
-const AuthContext = createContext<any>(null);
+const AuthStateChangeProvider = ({ children }: { children: ReactNode }) => {
+    const [isLoading, setIsLoading] = useState(true)
+    const { SetUser } = useUser();
 
-// Buat provider untuk konteks
-export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-
-    const [user, setUser] = useState(null)
-
-    const googleSignIn = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-    }
-
-    const logOut = () => {
-        signOut(auth)
-    }
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser)
+    const InitiateAuthStateChange = () => {
+        Authentication().onAuthStateChanged((user) => {
+            if (user) {
+                console.log("user is authenticated")
+                console.log({ user });
+                SetUser({ email: user.email, uid: user.uid })
+            } else {
+                console.log("user is not authenticated")
+            }
+            setIsLoading(false);
         })
-
-        return () => unsubscribe()
-
-    }, [user])
-
-
-    return (
-        // Berikan value prop dengan nilai yang ingin Anda bagikan
-        <AuthContext.Provider value={{ user, googleSignIn, logOut }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
+    }
+    useEffect(() => {
+        InitiateAuthStateChange()
+    }, [])
 
 
-export const UserAuth = () => {
-    return useContext(AuthContext)
+    return isLoading ? <CircularProgress /> : <>{children}</>
 }
+
+
+
+export default AuthStateChangeProvider;
