@@ -5,6 +5,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Authentication } from "../auth/firebase";
 import { useUser } from "./UserContext";
 import { useUserStore } from "../hooks/store/storeUser";
+import Spinner from "../components/Spinner";
 
 const AuthStateChangeProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +31,8 @@ const AuthStateChangeProvider = ({ children }: { children: ReactNode }) => {
         return () => unsubscribe();
     }, [setUser, useUserStore]); // Added setUser and setUserStore as dependencies
 
-    return isLoading ? <CircularProgress /> : <>{children}</>;
+    return isLoading ? <Spinner open={true} /> : <>{children}</>;
+    // return <>{children}</>;
 };
 
 export default AuthStateChangeProvider;
