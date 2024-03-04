@@ -3,8 +3,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export interface UserInterface {
-    email: string | null;
-    uid: string | null;
+    email: string;
+    uid: string;
 }
 
 interface UserContextType {

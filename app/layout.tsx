@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import ButtonAppBar from "./components/ButtonAppBar";
 import TheFooter from "./components/TheFooter";
 import "./globals.css";
 
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <ButtonAppBar />
         {children}
         <TheFooter />
       </body>

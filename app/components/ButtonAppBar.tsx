@@ -17,6 +17,8 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useUserStore } from "../hooks/store/storeUser"
 import MyModal from './MyModal';
 import SignIn from "../auth/SigIn";
+import { SignOut } from '../auth/firebase';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -24,6 +26,7 @@ const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
+    const router = useRouter()
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const { user } = useUserStore();
@@ -46,6 +49,16 @@ function ResponsiveAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleCloseUserMenuItem = (setting: string) => {
+        switch (setting) {
+            case "Logout":
+                SignOut();
+                router.push("/")
+                break;
+        }
+        handleCloseUserMenu();
+    }
 
     return (
         <>
@@ -175,7 +188,7 @@ function ResponsiveAppBar() {
                                     onClose={handleCloseUserMenu}
                                 >
                                     {settings.map((setting) => (
-                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                        <MenuItem key={setting} onClick={() => handleCloseUserMenuItem(setting)}>
                                             <Typography textAlign="center">{setting}</Typography>
                                         </MenuItem>
                                     ))}
