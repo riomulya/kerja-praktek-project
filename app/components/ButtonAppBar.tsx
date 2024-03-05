@@ -16,9 +16,11 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useUserStore } from "../hooks/store/storeUser"
 import MyModal from './MyModal';
-import SignIn from "../auth/SigIn";
 import { SignOut } from '../auth/firebase';
 import { useRouter } from 'next/navigation';
+import { AlertSnackBar } from './AlertSnackBar';
+import { FormAuth } from './FormAuth';
+import { FormSignUp } from './FormSignUp';
 
 
 
@@ -30,10 +32,13 @@ function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const { user } = useUserStore();
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [isOpenSignin, setIsOpenSignin] = React.useState(false);
+    const [isOpenSignup, setIsOpenSignup] = React.useState(false);
+    const [isLogout, setIsLogout] = React.useState(false);
 
-    const openModal = () => setIsOpen(true);
-    const closeModal = () => setIsOpen(false);
+    const openModalSignin = () => setIsOpenSignin(true);
+    const openModalSignup = () => setIsOpenSignup(true);
+    // const closeModal = () => setIsOpen(false);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -55,23 +60,46 @@ function ResponsiveAppBar() {
             case "Logout":
                 SignOut();
                 router.push("/")
+                setIsLogout(true)
                 break;
         }
         handleCloseUserMenu();
+    }
+
+    const handleOpenSignup = () => {
+        setIsOpenSignin(false)
+        setIsOpenSignup(true)
+    }
+
+    const handleOpenSignin = () => {
+        setIsOpenSignup(false)
+        setIsOpenSignin(true)
     }
 
     return (
         <>
             {user.uid ?
                 <></> :
-                <MyModal
-                    isOpen={isOpen}
-                    closeModal={closeModal}
-                    title=""
-                    message=""
-                    buttonText="">
-                    <SignIn />
-                </MyModal>
+                <div>
+                    <MyModal
+                        isOpen={isOpenSignin}
+                        closeModal={() => setIsOpenSignin(false)}
+                        title=""
+                        message=""
+                        bgModal='bg-inherit'
+                        buttonText="">
+                        <FormAuth toSignUp={handleOpenSignup} />
+                    </MyModal>
+                    <MyModal
+                        isOpen={isOpenSignup}
+                        closeModal={() => setIsOpenSignup(false)}
+                        title=""
+                        message=""
+                        bgModal='bg-inherit'
+                        buttonText="">
+                        <FormSignUp toSignIn={handleOpenSignin} />
+                    </MyModal>
+                </div>
             }
             <AppBar position="static" className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'>
                 <Container maxWidth="xl">
@@ -162,9 +190,9 @@ function ResponsiveAppBar() {
                             ))}
                         </Box>
                         {!user.uid ?
-                            <div>
-                                <Button variant="outlined" color='inherit' onClick={openModal}>Sign In</Button>
-                                <Button variant="outlined" color='inherit' className="ml-2">Sign Out</Button>
+                            <div className='flex flex-grow-0 p-0'>
+                                <Button variant="outlined" color='inherit' onClick={openModalSignin} className="m-1">Masuk</Button>
+                                <Button variant="outlined" color='inherit' onClick={openModalSignup} className='m-1'>Daftar</Button>
                             </div> : <Box sx={{ flexGrow: 0 }}>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -198,6 +226,7 @@ function ResponsiveAppBar() {
                     </Toolbar>
                 </Container>
             </AppBar >
+            <AlertSnackBar open={isLogout} handleClose={() => setIsLogout(false)} message={'Logout Success'} type={"success"} duration={6000} />
         </>
     );
 }

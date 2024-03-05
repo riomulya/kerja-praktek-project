@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { persist } from "zustand/middleware"
 
 interface UserInterface {
-    email: string | null;
-    uid: string | null;
+    email: Partial<string | null>;
+    uid: Partial<string | null>;
 }
 
 interface UserStore {
