@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import TheCard from '../components/TheCard';
+import TheCard from '../components/Utils/TheCard';
 import withAuthenticated from '../hoc/withAuthenticated';
 import { useUserStore } from '../hooks/store/storeUser';
 

@@ -14,13 +14,13 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { useUserStore } from "../hooks/store/storeUser"
-import MyModal from './MyModal';
-import { SignOut } from '../auth/firebase';
+import { useUserStore } from "../../hooks/store/storeUser"
+import MyModal from '../Utils/MyModal';
+import { SignOut } from '../../auth/firebase';
 import { useRouter } from 'next/navigation';
-import { AlertSnackBar } from './AlertSnackBar';
-import { FormAuth } from './FormAuth';
-import { FormSignUp } from './FormSignUp';
+import { AlertSnackBar } from '../Utils/AlertSnackBar';
+import { FormAuth } from '../Forms/FormAuth';
+import { FormSignUp } from '../Forms/FormSignUp';
 
 
 

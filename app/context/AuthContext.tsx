@@ -4,7 +4,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Authentication } from "../auth/firebase";
 import { useUser } from "./UserContext";
 import { useUserStore } from "../hooks/store/storeUser";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/Utils/Spinner";
 
 const AuthStateChangeProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
